@@ -1,0 +1,54 @@
+<!-- wp:template-part {"slug":"header","tagName":"header","theme":"nathan-west-michigan-realty"} /-->
+
+<!-- wp:group {"tagName":"section","backgroundColor":"navy","textColor":"white","style":{"spacing":{"padding":{"top":"clamp(3.5rem,7vw,5.5rem)","bottom":"clamp(3.5rem,7vw,5.5rem)"}}},"layout":{"type":"constrained","contentSize":"640px"}} -->
+<section class="wp-block-group has-navy-background-color has-background has-white-color has-text-color" style="padding-top:clamp(3.5rem,7vw,5.5rem);padding-bottom:clamp(3.5rem,7vw,5.5rem)">
+	<!-- wp:html --><hr class="nwmr-gold-rule nwmr-gold-rule--center" aria-hidden="true"><!-- /wp:html -->
+	<!-- wp:paragraph {"align":"center","style":{"typography":{"fontFamily":"var:preset|font-family|montserrat","fontSize":"0.7rem","fontWeight":"700","letterSpacing":"0.18em","textTransform":"uppercase"},"color":{"text":"#C8A96B"},"spacing":{"margin":{"bottom":"0.875rem"}}}} -->
+	<p class="has-text-align-center" style="font-family:var(--wp--preset--font-family--montserrat);font-size:0.7rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#C8A96B;margin-bottom:0.875rem">Your Agent</p>
+	<!-- /wp:paragraph -->
+	<!-- wp:heading {"textAlign":"center","level":1,"textColor":"white","style":{"typography":{"fontFamily":"var:preset|font-family|montserrat","fontWeight":"800","fontSize":"clamp(2rem,4.5vw,3.25rem)","lineHeight":"1.15"},"spacing":{"margin":{"bottom":"1.25rem"}}}} -->
+	<h1 class="wp-block-heading has-text-align-center has-white-color has-text-color" style="font-weight:800;font-size:clamp(2rem,4.5vw,3.25rem);line-height:1.15;margin-bottom:1.25rem">About Nathan</h1>
+	<!-- /wp:heading -->
+	<!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.78)"},"typography":{"fontSize":"1.0625rem"}}} -->
+	<p class="has-text-align-center" style="color:rgba(255,255,255,0.78);font-size:1.0625rem">West Michigan native. Passionate about homeownership. Here to guide you with honesty, patience, and real local expertise.</p>
+	<!-- /wp:paragraph -->
+</section>
+<!-- /wp:group -->
+
+<!-- wp:group {"tagName":"main","style":{"spacing":{"padding":{"top":"clamp(4rem,8vw,7rem)","bottom":"clamp(4rem,8vw,7rem)"}}},"layout":{"type":"constrained","wideSize":"1100px"}} -->
+<main class="wp-block-group" style="padding-top:clamp(4rem,8vw,7rem);padding-bottom:clamp(4rem,8vw,7rem)">
+
+	<!-- wp:columns {"isStackedOnMobile":true,"verticalAlignment":"center","style":{"spacing":{"blockGap":{"top":"3rem","left":"5rem"}}}} -->
+	<div class="wp-block-columns are-vertically-aligned-center">
+
+		<!-- Photo -->
+		<!-- wp:column {"width":"40%"} -->
+		<div class="wp-block-column" style="flex-basis:40%">
+			<!-- wp:html -->
+			<div class="nwmr-agent-photo">
+				<img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/images/agent-photo-placeholder.jpg"
+				     alt="Nathan — West Michigan Real Estate Agent"
+				     loading="lazy" width="600" height="750">
+			</div>
+			<!-- /wp:html -->
+		</div>
+		<!-- /wp:column -->
+
+		<!-- Full story -->
+		<!-- wp:column -->
+		<div class="wp-block-column">
+			<!-- wp:post-content {"layout":{"type":"constrained"}} /-->
+		</div>
+		<!-- /wp:column -->
+
+	</div>
+	<!-- /wp:columns -->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:pattern {"slug":"nathan-west-michigan-realty/testimonials"} /-->
+
+<!-- wp:pattern {"slug":"nathan-west-michigan-realty/final-cta"} /-->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer","theme":"nathan-west-michigan-realty"} /-->

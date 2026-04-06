@@ -1,0 +1,54 @@
+<!-- wp:template-part {"slug":"header","tagName":"header","theme":"nathan-west-michigan-realty"} /-->
+
+<!-- wp:group {"tagName":"section","backgroundColor":"navy","textColor":"white","style":{"spacing":{"padding":{"top":"clamp(3rem,6vw,5rem)","bottom":"clamp(3rem,6vw,5rem)"}}},"layout":{"type":"constrained","contentSize":"640px"}} -->
+<section class="wp-block-group has-navy-background-color has-background has-white-color has-text-color" style="padding-top:clamp(3rem,6vw,5rem);padding-bottom:clamp(3rem,6vw,5rem)">
+	<!-- wp:query-title {"type":"archive","textAlign":"center","level":1,"textColor":"white","style":{"typography":{"fontFamily":"var:preset|font-family|montserrat","fontWeight":"800","fontSize":"clamp(1.75rem,4vw,3rem)"}}} /-->
+	<!-- wp:term-description {"textAlign":"center","style":{"color":{"text":"rgba(255,255,255,0.78)"},"typography":{"fontSize":"1.0625rem"},"spacing":{"margin":{"top":"1rem"}}}} /-->
+</section>
+<!-- /wp:group -->
+
+<!-- wp:group {"tagName":"main","style":{"spacing":{"padding":{"top":"clamp(3rem,6vw,5rem)","bottom":"clamp(3rem,6vw,5rem)"}}},"layout":{"type":"constrained","wideSize":"1100px"}} -->
+<main class="wp-block-group" style="padding-top:clamp(3rem,6vw,5rem);padding-bottom:clamp(3rem,6vw,5rem)">
+
+	<!-- wp:query {"queryId":0,"query":{"perPage":9,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"align":"wide","layout":{"type":"constrained"}} -->
+	<div class="wp-block-query alignwide">
+
+		<!-- wp:post-template {"layout":{"type":"grid","columnCount":3}} -->
+			<!-- wp:group {"className":"nwmr-blog-card","style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"0","bottom":"0","left":"0","right":"0"}}},"backgroundColor":"white","layout":{"type":"constrained"}} -->
+			<div class="wp-block-group nwmr-blog-card has-white-background-color has-background" style="border-radius:12px;overflow:hidden">
+				<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"3/2"} /-->
+				<!-- wp:group {"style":{"spacing":{"padding":{"top":"1.25rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"},"blockGap":"0.5rem"}},"layout":{"type":"constrained"}} -->
+				<div class="wp-block-group" style="padding:1.25rem 1.5rem 1.5rem">
+					<!-- wp:post-terms {"term":"category","style":{"typography":{"fontFamily":"var:preset|font-family|montserrat","fontSize":"0.7rem","fontWeight":"700","letterSpacing":"0.12em","textTransform":"uppercase"},"color":{"text":"#C8A96B"}}} /-->
+					<!-- wp:post-title {"isLink":true,"level":3,"textColor":"navy","style":{"typography":{"fontFamily":"var:preset|font-family|montserrat","fontWeight":"700","fontSize":"1.0625rem","lineHeight":"1.35"}}} /-->
+					<!-- wp:post-date {"style":{"typography":{"fontSize":"0.8125rem"},"color":{"text":"#6b7280"}}} /-->
+					<!-- wp:read-more {"content":"Read More →","style":{"typography":{"fontFamily":"var:preset|font-family|montserrat","fontSize":"0.8125rem","fontWeight":"600"},"color":{"text":"#0B1F3A"}}} /-->
+				</div>
+				<!-- /wp:group -->
+			</div>
+			<!-- /wp:group -->
+		<!-- /wp:post-template -->
+
+		<!-- wp:query-no-results -->
+		<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#374151"}}} -->
+		<p class="has-text-align-center" style="color:#374151">Nothing found here. Try a different search or <a href="/blog">visit the blog</a>.</p>
+		<!-- /wp:paragraph -->
+		<!-- /wp:query-no-results -->
+
+		<!-- wp:group {"style":{"spacing":{"margin":{"top":"3rem"}}},"layout":{"type":"flex","justifyContent":"center"}} -->
+		<div class="wp-block-group" style="margin-top:3rem">
+			<!-- wp:query-pagination {"layout":{"type":"flex","justifyContent":"center"}} -->
+				<!-- wp:query-pagination-previous /-->
+				<!-- wp:query-pagination-numbers /-->
+				<!-- wp:query-pagination-next /-->
+			<!-- /wp:query-pagination -->
+		</div>
+		<!-- /wp:group -->
+
+	</div>
+	<!-- /wp:query -->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer","theme":"nathan-west-michigan-realty"} /-->
