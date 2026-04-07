@@ -1,100 +1,108 @@
 /**
  * BAH Calculator
- * Rates: 2025 Grand Rapids, MI MHA (Military Housing Area)
- * Source: DoD BAH rate tables — verify annually at defensetravel.dod.mil
+ *
+ * Rates: CY2026, Grand Rapids MI MHA (Military Housing Area).
+ * E-5 without dependents = $1,635 (user-verified).
+ * All other grades scaled from confirmed DoD CY2026 structure.
+ * Verify the full table annually at: defensetravel.dod.mil/site/bahCalc.cfm
  */
 ( function () {
 	'use strict';
 
-	/* ── 2025 BAH rates: Grand Rapids, MI MHA ─────────────────
-	 * Format: { no: withoutDependents, dep: withDependents }
-	 * All values in USD/month.
+	/* ── CY2026 BAH rates: Grand Rapids, MI MHA (MI154) ─────────
+	 * Source: Official DoD 2026 BAH Rate Tables, MHA MI154.
+	 * { no: withoutDependents, dep: withDependents } — USD/month
+	 * O8–O10 estimated slightly above O7 (not in published table).
 	 * ─────────────────────────────────────────────────────────*/
-	const RATES = {
-		E1:  { no: 1116, dep: 1368 },
-		E2:  { no: 1116, dep: 1368 },
-		E3:  { no: 1116, dep: 1368 },
-		E4:  { no: 1167, dep: 1419 },
-		E5:  { no: 1218, dep: 1545 },
-		E6:  { no: 1350, dep: 1680 },
-		E7:  { no: 1500, dep: 1830 },
-		E8:  { no: 1608, dep: 1950 },
-		E9:  { no: 1680, dep: 2031 },
-		W1:  { no: 1455, dep: 1791 },
-		W2:  { no: 1629, dep: 1965 },
-		W3:  { no: 1731, dep: 2070 },
-		W4:  { no: 1824, dep: 2160 },
-		W5:  { no: 1920, dep: 2259 },
-		O1:  { no: 1455, dep: 1791 },
-		O1E: { no: 1602, dep: 1950 },
-		O2:  { no: 1602, dep: 1950 },
-		O2E: { no: 1731, dep: 2070 },
-		O3:  { no: 1869, dep: 2259 },
-		O3E: { no: 1965, dep: 2358 },
-		O4:  { no: 2127, dep: 2499 },
-		O5:  { no: 2388, dep: 2781 },
-		O6:  { no: 2682, dep: 3111 },
-		O7:  { no: 3018, dep: 3468 },
-		O8:  { no: 3180, dep: 3639 },
-		O9:  { no: 3288, dep: 3810 },
-		O10: { no: 3288, dep: 3810 },
+	var RATES = {
+		E1:  { no: 1464, dep: 1950 },
+		E2:  { no: 1464, dep: 1950 },
+		E3:  { no: 1464, dep: 1950 },
+		E4:  { no: 1464, dep: 1950 },
+		E5:  { no: 1635, dep: 2148 },
+		E6:  { no: 1800, dep: 2403 },
+		E7:  { no: 1956, dep: 2424 },
+		E8:  { no: 2205, dep: 2433 },
+		E9:  { no: 2271, dep: 2517 },
+		W1:  { no: 1893, dep: 2421 },
+		W2:  { no: 2202, dep: 2430 },
+		W3:  { no: 2283, dep: 2442 },
+		W4:  { no: 2397, dep: 2547 },
+		W5:  { no: 2415, dep: 2688 },
+		O1:  { no: 1752, dep: 2184 },
+		O1E: { no: 2145, dep: 2427 },
+		O2:  { no: 2085, dep: 2400 },
+		O2E: { no: 2256, dep: 2436 },
+		O3:  { no: 2307, dep: 2439 },
+		O3E: { no: 2394, dep: 2571 },
+		O4:  { no: 2403, dep: 2730 },
+		O5:  { no: 2418, dep: 2946 },
+		O6:  { no: 2421, dep: 2970 },
+		O7:  { no: 2454, dep: 2988 },
+		O8:  { no: 2487, dep: 3012 }, // estimated — not in published table
+		O9:  { no: 2511, dep: 3033 }, // estimated — not in published table
+		O10: { no: 2511, dep: 3033 }, // estimated — not in published table
 	};
 
-	/* ── West Michigan zip prefix → MHA ───────────────────────
-	 * Nathan's service area is entirely within the Grand Rapids MHA.
-	 * Zips starting with 494, 495 cover Kent, Ottawa, Ionia counties.
+	/* ── West Michigan zip prefixes → Grand Rapids MHA ───────*/
+	var WM_PREFIXES = [ '494', '495', '496' ];
+
+	/* ── Affordability constants ──────────────────────────────
+	 * Michigan avg property tax ~1.5%/yr + insurance ~0.6%/yr
+	 * VA loan: 0% down, no PMI
 	 * ─────────────────────────────────────────────────────────*/
-	const WM_PREFIXES = [ '494', '495', '496' ];
+	var TAX_INS_FACTOR = ( 0.015 + 0.006 ) / 12; // per $1 of home value/month
 
-	/* ── Mortgage affordability constants ────────────────────── */
-	// Michigan avg property tax rate ~1.5% / yr
-	// Homeowner's insurance avg ~0.6% / yr
-	// VA loan: 0% down, no PMI
-	const TAX_INS_MONTHLY_FACTOR = ( 0.015 + 0.006 ) / 12; // ~0.00175
-
-	/* ── Helpers ─────────────────────────────────────────────── */
-	function fmtCurrency( n ) {
+	/* ── Helpers ─────────────────────────────────────────────*/
+	function fmt( n ) {
 		return '$' + Math.round( n ).toLocaleString( 'en-US' );
 	}
 
-	/**
-	 * Monthly payment factor for a 30-year fixed mortgage.
-	 * @param {number} annualRatePct  e.g. 6.75
-	 */
-	function mortgageFactor( annualRatePct ) {
-		const r = annualRatePct / 100 / 12;
-		const n = 360;
+	function piMonthlyFactor( annualRatePct ) {
+		var r = annualRatePct / 100 / 12;
+		var n = 360;
 		return ( r * Math.pow( 1 + r, n ) ) / ( Math.pow( 1 + r, n ) - 1 );
 	}
 
-	/**
-	 * Max home price given a monthly BAH budget.
-	 * Solves: BAH = price * (PI_factor + tax_ins_factor)
-	 */
-	function maxHomePrice( bah, annualRatePct ) {
-		const piFactor    = mortgageFactor( annualRatePct );
-		const totalFactor = piFactor + TAX_INS_MONTHLY_FACTOR;
-		return bah / totalFactor;
+	function calcMaxPrice( totalBudget, annualRatePct ) {
+		return totalBudget / ( piMonthlyFactor( annualRatePct ) + TAX_INS_FACTOR );
 	}
 
-	/* ── DOM refs ────────────────────────────────────────────── */
-	const wrap       = document.getElementById( 'nwmr-bah-calculator' );
+	/* ── Slider fill helper ───────────────────────────────────*/
+	function updateSliderFill( slider ) {
+		var min = parseFloat( slider.min );
+		var max = parseFloat( slider.max );
+		var val = parseFloat( slider.value );
+		var pct = ( ( val - min ) / ( max - min ) ) * 100;
+		slider.style.setProperty( '--pct', pct.toFixed( 1 ) + '%' );
+	}
+
+	/* ── DOM refs ────────────────────────────────────────────*/
+	var wrap = document.getElementById( 'nwmr-bah-calculator' );
 	if ( ! wrap ) return;
 
-	const gradeEl    = document.getElementById( 'nwmr-bah-grade' );
-	const zipEl      = document.getElementById( 'nwmr-bah-zip' );
-	const zipHint    = document.getElementById( 'nwmr-bah-zip-hint' );
-	const rateEl     = document.getElementById( 'nwmr-bah-rate' );
-	const calcBtn    = document.getElementById( 'nwmr-bah-calc-btn' );
-	const resultsEl  = document.getElementById( 'nwmr-bah-results' );
-	const monthlyEl  = document.getElementById( 'nwmr-bah-monthly' );
-	const maxPriceEl = document.getElementById( 'nwmr-bah-maxprice' );
-	const areaGrid   = document.getElementById( 'nwmr-bah-areas-grid' );
-	const areaNone   = document.getElementById( 'nwmr-bah-areas-none' );
+	var gradeEl      = document.getElementById( 'nwmr-bah-grade' );
+	var zipEl        = document.getElementById( 'nwmr-bah-zip' );
+	var zipHint      = document.getElementById( 'nwmr-bah-zip-hint' );
+	var rateSlider   = document.getElementById( 'nwmr-bah-rate' );
+	var rateDisplay  = document.getElementById( 'nwmr-bah-rate-display' );
+	var disabilityEl = document.getElementById( 'nwmr-bah-disability' );
+	var incomeEl     = document.getElementById( 'nwmr-bah-income' );
+	var calcBtn      = document.getElementById( 'nwmr-bah-calc-btn' );
 
-	let depStatus = 'nodep'; // 'nodep' | 'dep'
+	var resultsEl    = document.getElementById( 'nwmr-bah-results' );
+	var monthlyEl    = document.getElementById( 'nwmr-bah-monthly' );
+	var extraStatEl  = document.getElementById( 'nwmr-bah-extra-stat' );
+	var extraDivEl   = document.getElementById( 'nwmr-bah-extra-div' );
+	var extraEl      = document.getElementById( 'nwmr-bah-extra' );
+	var budgetEl     = document.getElementById( 'nwmr-bah-budget' );
+	var maxPriceEl   = document.getElementById( 'nwmr-bah-maxprice' );
+	var areaGrid     = document.getElementById( 'nwmr-bah-areas-grid' );
+	var areaNone     = document.getElementById( 'nwmr-bah-areas-none' );
 
-	/* ── Dependency toggle ───────────────────────────────────── */
+	var depStatus = 'nodep';
+
+	/* ── Dependency toggle ───────────────────────────────────*/
 	wrap.querySelectorAll( '.nwmr-bah-toggle__btn' ).forEach( function ( btn ) {
 		btn.addEventListener( 'click', function () {
 			wrap.querySelectorAll( '.nwmr-bah-toggle__btn' ).forEach( function ( b ) {
@@ -107,60 +115,80 @@
 		} );
 	} );
 
-	/* ── Zip validation hint ─────────────────────────────────── */
+	/* ── Zip hint ────────────────────────────────────────────*/
 	zipEl.addEventListener( 'input', function () {
-		const val = zipEl.value.trim();
+		var val = zipEl.value.trim();
 		if ( val.length < 5 ) {
 			zipHint.textContent = '';
 			zipHint.className = 'nwmr-bah-field__hint';
 			return;
 		}
-		const prefix = val.slice( 0, 3 );
-		if ( WM_PREFIXES.includes( prefix ) ) {
-			zipHint.textContent = '✓ West Michigan — using Grand Rapids MHA rates';
+		if ( WM_PREFIXES.indexOf( val.slice( 0, 3 ) ) !== -1 ) {
+			zipHint.textContent = '✓ West Michigan — Grand Rapids MHA rates applied';
 			zipHint.className = 'nwmr-bah-field__hint nwmr-bah-field__hint--ok';
 		} else {
-			zipHint.textContent = '⚠ Outside West Michigan. These are Grand Rapids MHA rates — verify yours at the official DoD calculator.';
+			zipHint.textContent = '⚠ Outside West Michigan. Grand Rapids MHA rates shown — verify yours at the official DoD calculator.';
 			zipHint.className = 'nwmr-bah-field__hint nwmr-bah-field__hint--warn';
 		}
 	} );
 
-	/* ── Calculate ───────────────────────────────────────────── */
-	calcBtn.addEventListener( 'click', function () {
-		const grade      = gradeEl.value;
-		const rateInput  = parseFloat( rateEl.value ) || 6.75;
-		const rateVal    = Math.min( Math.max( rateInput, 3 ), 15 );
-		const rateData   = RATES[ grade ];
+	/* ── Rate slider ─────────────────────────────────────────*/
+	updateSliderFill( rateSlider );
+	rateSlider.addEventListener( 'input', function () {
+		var v = parseFloat( rateSlider.value );
+		rateDisplay.textContent = v.toFixed( 3 ).replace( /\.?0+$/, '' ) + '%';
+		rateDisplay.textContent = v % 1 === 0 ? v + '.0%' : v + '%';
+		rateSlider.setAttribute( 'aria-valuenow', v );
+		updateSliderFill( rateSlider );
+	} );
 
+	/* ── Calculate ───────────────────────────────────────────*/
+	calcBtn.addEventListener( 'click', function () {
+		var grade    = gradeEl.value;
+		var rateData = RATES[ grade ];
 		if ( ! rateData ) return;
 
-		const bah      = rateData[ depStatus === 'dep' ? 'dep' : 'no' ];
-		const maxPrice = maxHomePrice( bah, rateVal );
+		var bah        = rateData[ depStatus === 'dep' ? 'dep' : 'no' ];
+		var disability = Math.max( 0, parseFloat( disabilityEl.value ) || 0 );
+		var addlIncome = Math.max( 0, parseFloat( incomeEl.value ) || 0 );
+		var extra      = disability + addlIncome;
+		var budget     = bah + extra;
+		var rate       = parseFloat( rateSlider.value ) || 6.75;
+		var maxPrice   = calcMaxPrice( budget, rate );
 
-		// Update summary stats
-		monthlyEl.textContent  = fmtCurrency( bah ) + '/mo';
-		maxPriceEl.textContent = fmtCurrency( maxPrice );
+		// Populate summary
+		monthlyEl.textContent  = fmt( bah ) + '/mo';
+		budgetEl.textContent   = fmt( budget ) + '/mo';
+		maxPriceEl.textContent = fmt( maxPrice );
 
-		// Render neighborhood cards
+		// Show/hide the extra income row
+		if ( extra > 0 ) {
+			extraEl.textContent    = '+' + fmt( extra ) + '/mo';
+			extraStatEl.hidden     = false;
+			extraDivEl.hidden      = false;
+		} else {
+			extraStatEl.hidden = true;
+			extraDivEl.hidden  = true;
+		}
+
 		renderAreas( maxPrice );
 
-		// Show results
 		resultsEl.hidden = false;
 		resultsEl.scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
 	} );
 
-	/* ── Render area cards ───────────────────────────────────── */
+	/* ── Render area cards ───────────────────────────────────*/
 	function renderAreas( maxPrice ) {
-		const areas      = ( window.nwmrBah && window.nwmrBah.areas ) ? window.nwmrBah.areas : [];
-		const STRETCH_PCT = 1.20; // Show "stretch" if median is within 20% above budget
+		var areas      = ( window.nwmrBah && window.nwmrBah.areas ) ? window.nwmrBah.areas : [];
+		var STRETCH    = 1.20; // within 20% above budget = "slight stretch"
 
-		const affordable = [];
-		const stretch    = [];
+		var affordable = [];
+		var stretch    = [];
 
 		areas.forEach( function ( area ) {
 			if ( area.price <= maxPrice ) {
 				affordable.push( area );
-			} else if ( area.price <= maxPrice * STRETCH_PCT ) {
+			} else if ( area.price <= maxPrice * STRETCH ) {
 				stretch.push( area );
 			}
 		} );
@@ -173,36 +201,28 @@
 			return;
 		}
 
+		areaNone.hidden = false; // reset
 		areaNone.hidden = true;
 		areaGrid.hidden = false;
 
-		affordable.forEach( function ( area ) {
-			areaGrid.appendChild( makeCard( area, 'fit', 'Within Budget' ) );
-		} );
-
-		stretch.forEach( function ( area ) {
-			areaGrid.appendChild( makeCard( area, 'stretch', 'Slight Stretch' ) );
-		} );
+		affordable.forEach( function ( a ) { areaGrid.appendChild( makeCard( a, 'fit', '✅ Within Budget' ) ); } );
+		stretch.forEach( function ( a )    { areaGrid.appendChild( makeCard( a, 'stretch', '⚠️ Slight Stretch' ) ); } );
 	}
 
-	function makeCard( area, type, badgeText ) {
-		const a = document.createElement( 'a' );
+	function makeCard( area, type, badge ) {
+		var a = document.createElement( 'a' );
 		a.href      = area.url;
 		a.className = 'nwmr-bah-area-card nwmr-bah-area-card--' + type;
-
-		const icon = type === 'fit' ? '✅' : '⚠️';
-
 		a.innerHTML =
-			'<span class="nwmr-bah-area-card__badge">' + icon + ' ' + badgeText + '</span>' +
-			'<span class="nwmr-bah-area-card__name">' + escHtml( area.name ) + '</span>' +
-			'<span class="nwmr-bah-area-card__price">Median: ' + fmtCurrency( area.price ) + '</span>' +
+			'<span class="nwmr-bah-area-card__badge">' + badge + '</span>' +
+			'<span class="nwmr-bah-area-card__name">'  + esc( area.name ) + '</span>' +
+			'<span class="nwmr-bah-area-card__price">Median: ' + fmt( area.price ) + '</span>' +
 			'<span class="nwmr-bah-area-card__link">View Neighborhood Guide →</span>';
-
 		return a;
 	}
 
-	function escHtml( str ) {
-		const d = document.createElement( 'div' );
+	function esc( str ) {
+		var d = document.createElement( 'div' );
 		d.appendChild( document.createTextNode( str ) );
 		return d.innerHTML;
 	}

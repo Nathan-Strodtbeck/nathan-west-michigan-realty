@@ -29,11 +29,9 @@ function nwmr_register_bah_script(): void {
 add_shortcode( 'nwmr_bah_calculator', 'nwmr_bah_calculator_shortcode' );
 function nwmr_bah_calculator_shortcode(): string {
 
-	// Enqueue + localize with area guide data.
 	wp_enqueue_script( 'nwmr-bah-calculator' );
 	wp_localize_script( 'nwmr-bah-calculator', 'nwmrBah', [
-		'areas'    => nwmr_bah_get_area_data(),
-		'currency' => '$',
+		'areas' => nwmr_bah_get_area_data(),
 	] );
 
 	ob_start();
@@ -51,6 +49,7 @@ function nwmr_bah_calculator_shortcode(): string {
 
 			<div class="nwmr-bah-card__fields">
 
+				<!-- Pay Grade -->
 				<div class="nwmr-bah-field">
 					<label for="nwmr-bah-grade">Pay Grade</label>
 					<select id="nwmr-bah-grade">
@@ -90,6 +89,7 @@ function nwmr_bah_calculator_shortcode(): string {
 					</select>
 				</div>
 
+				<!-- Dependency Status -->
 				<div class="nwmr-bah-field">
 					<label>Dependency Status</label>
 					<div class="nwmr-bah-toggle" role="group" aria-label="Dependency status">
@@ -98,17 +98,41 @@ function nwmr_bah_calculator_shortcode(): string {
 					</div>
 				</div>
 
+				<!-- Zip Code -->
 				<div class="nwmr-bah-field">
 					<label for="nwmr-bah-zip">Your Zip Code <span class="nwmr-bah-field__note">(West Michigan)</span></label>
 					<input type="text" id="nwmr-bah-zip" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="e.g. 49506">
 					<p class="nwmr-bah-field__hint" id="nwmr-bah-zip-hint" aria-live="polite"></p>
 				</div>
 
-				<div class="nwmr-bah-field nwmr-bah-field--rate">
-					<label for="nwmr-bah-rate">Assumed Interest Rate <span class="nwmr-bah-field__note">(for affordability estimate)</span></label>
-					<div class="nwmr-bah-rate-wrap">
-						<input type="number" id="nwmr-bah-rate" value="6.75" min="3" max="12" step="0.125">
-						<span class="nwmr-bah-rate-wrap__pct">%</span>
+				<!-- VA Disability Compensation -->
+				<div class="nwmr-bah-field">
+					<label for="nwmr-bah-disability">VA Disability Compensation <span class="nwmr-bah-field__note">(monthly, if applicable)</span></label>
+					<div class="nwmr-bah-dollar-wrap">
+						<span class="nwmr-bah-dollar-wrap__sign" aria-hidden="true">$</span>
+						<input type="number" id="nwmr-bah-disability" min="0" step="10" placeholder="0">
+					</div>
+				</div>
+
+				<!-- Additional Monthly Income -->
+				<div class="nwmr-bah-field">
+					<label for="nwmr-bah-income">Additional Monthly Income <span class="nwmr-bah-field__note">(to apply toward housing)</span></label>
+					<div class="nwmr-bah-dollar-wrap">
+						<span class="nwmr-bah-dollar-wrap__sign" aria-hidden="true">$</span>
+						<input type="number" id="nwmr-bah-income" min="0" step="50" placeholder="0">
+					</div>
+				</div>
+
+				<!-- Interest Rate Slider — spans full width -->
+				<div class="nwmr-bah-field nwmr-bah-field--full">
+					<div class="nwmr-bah-slider-header">
+						<label for="nwmr-bah-rate">Assumed Interest Rate</label>
+						<span class="nwmr-bah-slider-value" id="nwmr-bah-rate-display" aria-live="polite">6.75%</span>
+					</div>
+					<input type="range" id="nwmr-bah-rate" min="3" max="12" step="0.125" value="6.75"
+						aria-label="Interest rate assumption" aria-valuemin="3" aria-valuemax="12" aria-valuenow="6.75">
+					<div class="nwmr-bah-slider-ticks" aria-hidden="true">
+						<span>3%</span><span>5%</span><span>7%</span><span>9%</span><span>11%</span><span>12%</span>
 					</div>
 				</div>
 
@@ -123,8 +147,18 @@ function nwmr_bah_calculator_shortcode(): string {
 
 			<div class="nwmr-bah-results__summary">
 				<div class="nwmr-bah-results__stat">
-					<span class="nwmr-bah-results__label">Est. Monthly BAH</span>
+					<span class="nwmr-bah-results__label">Monthly BAH</span>
 					<span class="nwmr-bah-results__value" id="nwmr-bah-monthly">—</span>
+				</div>
+				<div class="nwmr-bah-results__divider" aria-hidden="true"></div>
+				<div class="nwmr-bah-results__stat" id="nwmr-bah-extra-stat" hidden>
+					<span class="nwmr-bah-results__label">Extra Monthly Income</span>
+					<span class="nwmr-bah-results__value nwmr-bah-results__value--gold" id="nwmr-bah-extra">—</span>
+				</div>
+				<div class="nwmr-bah-results__divider" id="nwmr-bah-extra-div" aria-hidden="true" hidden></div>
+				<div class="nwmr-bah-results__stat">
+					<span class="nwmr-bah-results__label">Total Housing Budget</span>
+					<span class="nwmr-bah-results__value nwmr-bah-results__value--gold" id="nwmr-bah-budget">—</span>
 				</div>
 				<div class="nwmr-bah-results__divider" aria-hidden="true"></div>
 				<div class="nwmr-bah-results__stat">
@@ -134,23 +168,21 @@ function nwmr_bah_calculator_shortcode(): string {
 				<div class="nwmr-bah-results__divider" aria-hidden="true"></div>
 				<div class="nwmr-bah-results__stat">
 					<span class="nwmr-bah-results__label">Down Payment (VA)</span>
-					<span class="nwmr-bah-results__value nwmr-bah-results__value--gold">$0</span>
+					<span class="nwmr-bah-results__value">$0</span>
 				</div>
 			</div>
 
 			<p class="nwmr-bah-results__disclaimer">
-				Estimate uses 2025 Grand Rapids MHA rates. Includes principal, interest, estimated property tax (~1.5%) and insurance (~0.6%). No PMI — that's your VA benefit.
-				<a href="https://www.defensetravel.dod.mil/site/bahCalc.cfm" target="_blank" rel="noopener noreferrer">Verify official rates →</a>
+				CY2026 Grand Rapids MHA rates. Affordability includes P&amp;I at your chosen rate + est. property tax (~1.5%/yr) + insurance (~0.6%/yr). No PMI — that's your VA benefit.
+				<a href="https://www.defensetravel.dod.mil/site/bahCalc.cfm" target="_blank" rel="noopener noreferrer">Verify official rates at DoD →</a>
 			</p>
 
 			<!-- Neighborhood affordability -->
 			<div class="nwmr-bah-areas" id="nwmr-bah-areas">
 				<h4 class="nwmr-bah-areas__title">West Michigan Neighborhoods Within Your Budget</h4>
-				<div class="nwmr-bah-areas__grid" id="nwmr-bah-areas-grid">
-					<!-- Populated by JS -->
-				</div>
+				<div class="nwmr-bah-areas__grid" id="nwmr-bah-areas-grid"></div>
 				<p class="nwmr-bah-areas__none" id="nwmr-bah-areas-none" hidden>
-					No neighborhoods match your current budget. Consider a higher pay grade scenario or contact me — there may be options we can find together.
+					No neighborhoods match your current budget. Contact me — there may be options we can find together.
 				</p>
 			</div>
 
@@ -159,14 +191,15 @@ function nwmr_bah_calculator_shortcode(): string {
 	</div><!-- .nwmr-bah-wrap -->
 
 	<style>
-	/* ── BAH Calculator Styles ───────────────────────────────── */
+	/* ── BAH Calculator ──────────────────────────────────────── */
 	.nwmr-bah-wrap { max-width: 860px; margin: 0 auto; }
 
 	.nwmr-bah-card {
-		background: #F5F7FA;
-		border: 1px solid rgba(200,169,107,0.3);
+		background: #fff;
+		border: 1px solid rgba(200,169,107,0.35);
 		border-radius: 12px;
 		padding: clamp(1.5rem, 4vw, 2.5rem);
+		box-shadow: 0 2px 16px rgba(11,31,58,.06);
 	}
 	.nwmr-bah-card__header { margin-bottom: 1.75rem; }
 	.nwmr-bah-card__title {
@@ -180,70 +213,128 @@ function nwmr_bah_calculator_shortcode(): string {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: 1.25rem 1.5rem;
-		margin-bottom: 1.5rem;
+		margin-bottom: 1.75rem;
 	}
-	@media (max-width: 640px) { .nwmr-bah-card__fields { grid-template-columns: 1fr; } }
+	@media (max-width: 600px) { .nwmr-bah-card__fields { grid-template-columns: 1fr; } }
+
+	.nwmr-bah-field--full { grid-column: 1 / -1; }
 
 	.nwmr-bah-field label {
 		display: block; font-weight: 600; font-size: 0.8125rem;
 		text-transform: uppercase; letter-spacing: .04em;
 		color: #374151; margin-bottom: 0.5rem;
 	}
-	.nwmr-bah-field__note { font-weight: 400; text-transform: none; letter-spacing: 0; color: #6B7280; font-size: 0.75rem; }
+	.nwmr-bah-field__note { font-weight: 400; text-transform: none; letter-spacing: 0; color: #9CA3AF; font-size: 0.75rem; }
+
 	.nwmr-bah-field select,
 	.nwmr-bah-field input[type="text"],
 	.nwmr-bah-field input[type="number"] {
 		width: 100%; padding: 0.625rem 0.875rem;
 		border: 1px solid #D1D5DB; border-radius: 6px;
 		font-size: 0.9375rem; background: #fff; color: #0B1F3A;
-		box-sizing: border-box;
+		box-sizing: border-box; appearance: auto;
 	}
 	.nwmr-bah-field select:focus,
-	.nwmr-bah-field input:focus { outline: 2px solid #C8A96B; border-color: #C8A96B; }
+	.nwmr-bah-field input[type="text"]:focus,
+	.nwmr-bah-field input[type="number"]:focus {
+		outline: 2px solid #C8A96B; outline-offset: 1px; border-color: #C8A96B;
+	}
 	.nwmr-bah-field__hint { font-size: 0.8125rem; margin: 0.375rem 0 0; min-height: 1.2em; }
-	.nwmr-bah-field__hint--warn  { color: #B45309; }
-	.nwmr-bah-field__hint--ok    { color: #166534; }
+	.nwmr-bah-field__hint--warn { color: #B45309; }
+	.nwmr-bah-field__hint--ok   { color: #166534; }
 
+	/* Dollar input wrapper */
+	.nwmr-bah-dollar-wrap { position: relative; }
+	.nwmr-bah-dollar-wrap__sign {
+		position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%);
+		color: #6B7280; font-size: 0.9375rem; pointer-events: none;
+	}
+	.nwmr-bah-dollar-wrap input { padding-left: 1.625rem !important; }
+
+	/* Dependency toggle */
 	.nwmr-bah-toggle { display: flex; border: 1px solid #D1D5DB; border-radius: 6px; overflow: hidden; }
 	.nwmr-bah-toggle__btn {
 		flex: 1; padding: 0.625rem 0.5rem; background: #fff;
 		border: none; cursor: pointer; font-size: 0.875rem; color: #374151;
-		transition: background .15s, color .15s;
+		transition: background .15s, color .15s; line-height: 1.4;
 	}
 	.nwmr-bah-toggle__btn + .nwmr-bah-toggle__btn { border-left: 1px solid #D1D5DB; }
 	.nwmr-bah-toggle__btn--active { background: #0B1F3A; color: #fff; font-weight: 600; }
 
-	.nwmr-bah-rate-wrap { display: flex; align-items: center; gap: 0.5rem; }
-	.nwmr-bah-rate-wrap input { width: auto; flex: 1; }
-	.nwmr-bah-rate-wrap__pct { color: #374151; font-size: 0.9375rem; }
+	/* Interest rate slider */
+	.nwmr-bah-slider-header {
+		display: flex; justify-content: space-between; align-items: baseline;
+		margin-bottom: 0.625rem;
+	}
+	.nwmr-bah-slider-header label { margin-bottom: 0; }
+	.nwmr-bah-slider-value {
+		font-size: 1.5rem; font-weight: 700; color: #C8A96B;
+		font-family: var(--wp--preset--font-family--montserrat, sans-serif);
+		line-height: 1;
+	}
 
+	input[type="range"]#nwmr-bah-rate {
+		-webkit-appearance: none; appearance: none;
+		width: 100%; height: 6px; border-radius: 3px;
+		background: #E5E7EB; outline: none; cursor: pointer;
+		/* filled portion set by JS via --pct custom property */
+		background: linear-gradient(to right, #C8A96B var(--pct, 31%), #E5E7EB var(--pct, 31%));
+	}
+	input[type="range"]#nwmr-bah-rate::-webkit-slider-thumb {
+		-webkit-appearance: none; appearance: none;
+		width: 22px; height: 22px; border-radius: 50%;
+		background: #0B1F3A; border: 3px solid #C8A96B;
+		cursor: pointer; transition: transform .15s;
+	}
+	input[type="range"]#nwmr-bah-rate::-moz-range-thumb {
+		width: 22px; height: 22px; border-radius: 50%;
+		background: #0B1F3A; border: 3px solid #C8A96B;
+		cursor: pointer;
+	}
+	input[type="range"]#nwmr-bah-rate:focus::-webkit-slider-thumb { transform: scale(1.15); }
+	input[type="range"]#nwmr-bah-rate:focus { outline: none; }
+
+	.nwmr-bah-slider-ticks {
+		display: flex; justify-content: space-between;
+		margin-top: 0.375rem; padding: 0 2px;
+	}
+	.nwmr-bah-slider-ticks span { font-size: 0.75rem; color: #9CA3AF; }
+
+	/* Calculate button */
 	.nwmr-bah-btn {
-		display: inline-block; padding: 0.8125rem 2rem;
+		width: 100%; padding: 0.875rem 2rem;
 		background: #C8A96B; color: #0B1F3A;
 		font-family: var(--wp--preset--font-family--montserrat, sans-serif);
-		font-weight: 700; font-size: 0.9375rem;
-		border: none; border-radius: 4px; cursor: pointer;
-		transition: background .2s; width: 100%;
+		font-weight: 700; font-size: 1rem;
+		border: none; border-radius: 6px; cursor: pointer;
+		transition: background .2s, transform .1s;
 	}
 	.nwmr-bah-btn:hover { background: #b8945a; }
+	.nwmr-bah-btn:active { transform: scale(.98); }
 
 	/* Results */
 	.nwmr-bah-results { margin-top: 2rem; }
 	.nwmr-bah-results__summary {
 		display: flex; align-items: center; justify-content: space-around;
+		flex-wrap: wrap; gap: 1rem;
 		background: #0B1F3A; border-radius: 12px;
-		padding: 1.5rem 2rem; gap: 1rem; flex-wrap: wrap;
+		padding: 1.5rem 2rem;
 	}
 	.nwmr-bah-results__stat { text-align: center; }
-	.nwmr-bah-results__label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,0.6); margin-bottom: 0.375rem; }
-	.nwmr-bah-results__value { display: block; font-size: 1.625rem; font-weight: 700; color: #fff; font-family: var(--wp--preset--font-family--montserrat, sans-serif); }
+	.nwmr-bah-results__label {
+		display: block; font-size: 0.6875rem; text-transform: uppercase;
+		letter-spacing: .08em; color: rgba(255,255,255,0.55); margin-bottom: 0.375rem;
+	}
+	.nwmr-bah-results__value {
+		display: block; font-size: 1.5rem; font-weight: 700; color: #fff;
+		font-family: var(--wp--preset--font-family--montserrat, sans-serif);
+	}
 	.nwmr-bah-results__value--gold { color: #C8A96B; }
-	.nwmr-bah-results__divider { width: 1px; height: 3rem; background: rgba(255,255,255,0.15); }
+	.nwmr-bah-results__divider { width: 1px; height: 2.75rem; background: rgba(255,255,255,.12); flex-shrink: 0; }
 	@media (max-width: 560px) { .nwmr-bah-results__divider { display: none; } }
 
 	.nwmr-bah-results__disclaimer {
-		font-size: 0.8125rem; color: #6B7280; margin: 0.875rem 0 0;
-		line-height: 1.5;
+		font-size: 0.8125rem; color: #6B7280; margin: 0.875rem 0 0; line-height: 1.6;
 	}
 	.nwmr-bah-results__disclaimer a { color: #C8A96B; }
 
@@ -251,12 +342,11 @@ function nwmr_bah_calculator_shortcode(): string {
 	.nwmr-bah-areas { margin-top: 2rem; }
 	.nwmr-bah-areas__title {
 		font-family: var(--wp--preset--font-family--montserrat, sans-serif);
-		font-size: 1.125rem; font-weight: 700; color: #0B1F3A;
-		margin: 0 0 1.25rem;
+		font-size: 1.125rem; font-weight: 700; color: #0B1F3A; margin: 0 0 1.25rem;
 	}
 	.nwmr-bah-areas__grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
 		gap: 1rem;
 	}
 	.nwmr-bah-area-card {
@@ -265,21 +355,18 @@ function nwmr_bah_calculator_shortcode(): string {
 		display: flex; flex-direction: column; gap: 0.375rem;
 		transition: transform .15s, box-shadow .15s;
 	}
-	.nwmr-bah-area-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.1); }
-	.nwmr-bah-area-card--fit   { background: #ECFDF5; border-color: #6EE7B7; }
+	.nwmr-bah-area-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+	.nwmr-bah-area-card--fit     { background: #ECFDF5; border-color: #6EE7B7; }
 	.nwmr-bah-area-card--stretch { background: #FFFBEB; border-color: #FCD34D; }
 	.nwmr-bah-area-card__badge {
-		font-size: 0.6875rem; font-weight: 700; text-transform: uppercase;
-		letter-spacing: .07em; margin-bottom: 0.25rem;
+		font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em;
 	}
-	.nwmr-bah-area-card--fit   .nwmr-bah-area-card__badge { color: #065F46; }
+	.nwmr-bah-area-card--fit     .nwmr-bah-area-card__badge { color: #065F46; }
 	.nwmr-bah-area-card--stretch .nwmr-bah-area-card__badge { color: #92400E; }
-	.nwmr-bah-area-card__name { font-weight: 700; color: #0B1F3A; font-size: 1rem; }
+	.nwmr-bah-area-card__name  { font-weight: 700; color: #0B1F3A; font-size: 1rem; }
 	.nwmr-bah-area-card__price { font-size: 0.875rem; color: #374151; }
-	.nwmr-bah-area-card__link {
-		font-size: 0.8125rem; font-weight: 600; margin-top: 0.25rem;
-	}
-	.nwmr-bah-area-card--fit    .nwmr-bah-area-card__link { color: #065F46; }
+	.nwmr-bah-area-card__link  { font-size: 0.8125rem; font-weight: 600; margin-top: 0.25rem; }
+	.nwmr-bah-area-card--fit     .nwmr-bah-area-card__link { color: #065F46; }
 	.nwmr-bah-area-card--stretch .nwmr-bah-area-card__link { color: #92400E; }
 
 	.nwmr-bah-areas__none { color: #374151; font-size: 0.9375rem; }
@@ -291,8 +378,7 @@ function nwmr_bah_calculator_shortcode(): string {
 
 /**
  * Pull area guide posts with median prices.
- * Falls back to curated defaults for known West Michigan markets
- * so the calculator works before any area guides are published.
+ * Falls back to curated West Michigan defaults until area guides are published.
  *
  * @return array<array{name:string,price:int,url:string}>
  */
@@ -309,10 +395,9 @@ function nwmr_bah_get_area_data(): array {
 
 	foreach ( $posts as $post ) {
 		$raw_price = get_post_meta( $post->ID, '_nwmr_area_median_price', true );
-		// Strip non-numeric characters to get an integer (handles "$350,000" format).
-		$price = (int) preg_replace( '/[^0-9]/', '', $raw_price );
+		$price     = (int) preg_replace( '/[^0-9]/', '', $raw_price );
 		if ( $price < 1 ) {
-			continue; // Skip posts without a price set.
+			continue;
 		}
 		$areas[] = [
 			'name'  => get_the_title( $post ),
@@ -321,15 +406,14 @@ function nwmr_bah_get_area_data(): array {
 		];
 	}
 
-	// If no area guides have prices, use curated West Michigan defaults.
 	if ( empty( $areas ) ) {
 		$areas = [
-			[ 'name' => 'Lowell',        'price' => 320000, 'url' => home_url( '/area/lowell' ) ],
-			[ 'name' => 'Grand Rapids',  'price' => 355000, 'url' => home_url( '/area/grand-rapids' ) ],
-			[ 'name' => 'Rockford',      'price' => 415000, 'url' => home_url( '/area/rockford' ) ],
-			[ 'name' => 'Holland',       'price' => 390000, 'url' => home_url( '/area/holland' ) ],
-			[ 'name' => 'Grand Haven',   'price' => 440000, 'url' => home_url( '/area/grand-haven' ) ],
-			[ 'name' => 'Spring Lake',   'price' => 460000, 'url' => home_url( '/area/spring-lake' ) ],
+			[ 'name' => 'Lowell',       'price' => 320000, 'url' => home_url( '/area/lowell' ) ],
+			[ 'name' => 'Grand Rapids', 'price' => 355000, 'url' => home_url( '/area/grand-rapids' ) ],
+			[ 'name' => 'Holland',      'price' => 390000, 'url' => home_url( '/area/holland' ) ],
+			[ 'name' => 'Rockford',     'price' => 415000, 'url' => home_url( '/area/rockford' ) ],
+			[ 'name' => 'Grand Haven',  'price' => 440000, 'url' => home_url( '/area/grand-haven' ) ],
+			[ 'name' => 'Spring Lake',  'price' => 460000, 'url' => home_url( '/area/spring-lake' ) ],
 		];
 	}
 
