@@ -33,7 +33,7 @@ function nwmr_bah_calculator_shortcode(): string {
 	wp_enqueue_script( 'nwmr-bah-calculator' );
 	wp_localize_script( 'nwmr-bah-calculator', 'nwmrBah', [
 		'areas'    => nwmr_bah_get_area_data(),
-		'currency' => get_woocommerce_currency_symbol() ?? '$',
+		'currency' => '$',
 	] );
 
 	ob_start();
