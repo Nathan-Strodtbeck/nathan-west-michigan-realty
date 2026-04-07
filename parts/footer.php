@@ -1,3 +1,21 @@
+<?php
+/**
+ * Footer template part — renders contact info dynamically from Customizer.
+ *
+ * @package nathan-west-michigan-realty
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+$phone_raw  = get_theme_mod( 'nwmr_phone', '(616) 555-0100' );
+$phone_uri  = 'tel:' . preg_replace( '/[^0-9+]/', '', $phone_raw );
+$phone      = esc_html( $phone_raw );
+$email_raw  = get_theme_mod( 'nwmr_email', 'hello@nathanwestmichiganrealty.com' );
+$email      = esc_html( $email_raw );
+$license    = esc_html( get_theme_mod( 'nwmr_license', 'Michigan Real Estate License # XXXXXXX' ) );
+$brokerage  = esc_html( get_theme_mod( 'nwmr_brokerage', 'Brokerage Name Here' ) );
+$year       = gmdate( 'Y' );
+?>
 <!-- wp:group {"tagName":"footer","className":"site-footer","backgroundColor":"navy","textColor":"white","style":{"spacing":{"padding":{"top":"0","bottom":"0"}}},"layout":{"type":"constrained","wideSize":"1280px"}} -->
 <footer class="wp-block-group site-footer has-navy-background-color has-background has-white-color has-text-color">
 
@@ -21,13 +39,13 @@
 				<!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"center"},"style":{"spacing":{"blockGap":"0.75rem"}}} -->
 				<div class="wp-block-group">
 					<!-- wp:paragraph {"style":{"typography":{"fontSize":"0.875rem"},"color":{"text":"rgba(255,255,255,0.75)"}}} -->
-					<p style="font-size:0.875rem;color:rgba(255,255,255,0.75)">📞 <a href="tel:6165550100" style="color:inherit;text-decoration:none">(616) 555-0100</a></p>
+					<p style="font-size:0.875rem;color:rgba(255,255,255,0.75)">📞 <a href="<?php echo esc_attr( $phone_uri ); ?>" style="color:inherit;text-decoration:none"><?php echo $phone; ?></a></p>
 					<!-- /wp:paragraph -->
 				</div>
 				<!-- /wp:group -->
 
 				<!-- wp:paragraph {"style":{"typography":{"fontSize":"0.875rem"},"color":{"text":"rgba(255,255,255,0.75)"},"spacing":{"margin":{"top":"0.5rem"}}}} -->
-				<p style="font-size:0.875rem;color:rgba(255,255,255,0.75);margin-top:0.5rem">✉ <a href="mailto:hello@nathanwestmichiganrealty.com" style="color:inherit;text-decoration:none">hello@nathanwestmichiganrealty.com</a></p>
+				<p style="font-size:0.875rem;color:rgba(255,255,255,0.75);margin-top:0.5rem">✉ <a href="mailto:<?php echo esc_attr( $email_raw ); ?>" style="color:inherit;text-decoration:none"><?php echo $email; ?></a></p>
 				<!-- /wp:paragraph -->
 
 			</div>
@@ -117,7 +135,7 @@
 		<div class="wp-block-group">
 
 			<!-- wp:paragraph {"style":{"typography":{"fontSize":"0.75rem"},"color":{"text":"rgba(255,255,255,0.45)"}}} -->
-			<p style="font-size:0.75rem;color:rgba(255,255,255,0.45)">&copy; 2024 Nathan West Michigan Realty. All rights reserved. Michigan Real Estate License # XXXXXXX | Brokerage Name Here. Information deemed reliable but not guaranteed. Equal Housing Opportunity.</p>
+			<p style="font-size:0.75rem;color:rgba(255,255,255,0.45)">&copy; <?php echo $year; ?> Nathan West Michigan Realty. All rights reserved. <?php echo $license; ?> | <?php echo $brokerage; ?>. Information deemed reliable but not guaranteed. Equal Housing Opportunity.</p>
 			<!-- /wp:paragraph -->
 
 			<!-- wp:paragraph {"style":{"typography":{"fontSize":"0.75rem"},"color":{"text":"rgba(255,255,255,0.45)"}}} -->

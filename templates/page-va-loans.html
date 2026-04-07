@@ -21,16 +21,156 @@
 	<!-- wp:columns {"isStackedOnMobile":true,"style":{"spacing":{"blockGap":{"top":"3rem","left":"4rem"}}}} -->
 	<div class="wp-block-columns">
 
-		<!-- Main content -->
-		<!-- wp:column {"width":"65%"} -->
-		<div class="wp-block-column" style="flex-basis:65%">
-			<!-- wp:post-content {"layout":{"type":"constrained"}} /-->
+		<!-- ── Left: main content ──────────────────────────── -->
+		<!-- wp:column {"width":"62%"} -->
+		<div class="wp-block-column" style="flex-basis:62%">
+
+			<!-- Do You Qualify? -->
+			<!-- wp:heading {"level":2,"textColor":"navy","style":{"typography":{"fontFamily":"var:preset|font-family|montserrat","fontWeight":"700","fontSize":"1.625rem"},"spacing":{"margin":{"bottom":"1rem"}}}} -->
+			<h2 class="wp-block-heading has-navy-color has-text-color" style="font-family:var(--wp--preset--font-family--montserrat);font-weight:700;font-size:1.625rem;margin-bottom:1rem">Do You Qualify for a VA Loan?</h2>
+			<!-- /wp:heading -->
+
+			<!-- wp:paragraph {"style":{"color":{"text":"#374151"},"typography":{"fontSize":"1rem"},"spacing":{"margin":{"bottom":"1.25rem"}}}} -->
+			<p style="color:#374151;font-size:1rem;margin-bottom:1.25rem">VA loans are available to veterans, active-duty service members, and eligible surviving spouses. Most borrowers qualify with as little as 90 days of active service. Common qualifying categories include:</p>
+			<!-- /wp:paragraph -->
+
+			<!-- wp:html -->
+			<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.75rem">
+				<div style="background:#F5F7FA;border-left:3px solid #C8A96B;border-radius:6px;padding:0.875rem 1rem;font-size:0.9375rem;color:#374151">🎖️ <strong>Veterans</strong> with honorable discharge</div>
+				<div style="background:#F5F7FA;border-left:3px solid #C8A96B;border-radius:6px;padding:0.875rem 1rem;font-size:0.9375rem;color:#374151">⚔️ <strong>Active-duty</strong> service members</div>
+				<div style="background:#F5F7FA;border-left:3px solid #C8A96B;border-radius:6px;padding:0.875rem 1rem;font-size:0.9375rem;color:#374151">🛡️ <strong>National Guard</strong> &amp; Reservists</div>
+				<div style="background:#F5F7FA;border-left:3px solid #C8A96B;border-radius:6px;padding:0.875rem 1rem;font-size:0.9375rem;color:#374151">🤍 <strong>Surviving spouses</strong> of veterans</div>
+			</div>
+			<!-- /wp:html -->
+
+			<!-- wp:paragraph {"style":{"color":{"text":"#374151"},"typography":{"fontSize":"0.9375rem"},"spacing":{"margin":{"bottom":"2rem"}}}} -->
+			<p style="color:#374151;font-size:0.9375rem;margin-bottom:2rem">Not sure if you qualify? I can help you pull your Certificate of Eligibility (COE) at no cost — it only takes a few minutes.</p>
+			<!-- /wp:paragraph -->
+
+			<!-- wp:separator {"style":{"spacing":{"margin":{"top":"0","bottom":"2rem"}},"color":{"background":"rgba(200,169,107,0.3)"}}} -->
+			<hr class="wp-block-separator has-background" style="margin-top:0;margin-bottom:2rem;background-color:rgba(200,169,107,0.3);border-color:rgba(200,169,107,0.3)"/>
+			<!-- /wp:separator -->
+
+			<!-- The VA Loan Process -->
+			<!-- wp:heading {"level":2,"textColor":"navy","style":{"typography":{"fontFamily":"var:preset|font-family|montserrat","fontWeight":"700","fontSize":"1.625rem"},"spacing":{"margin":{"bottom":"1.25rem"}}}} -->
+			<h2 class="wp-block-heading has-navy-color has-text-color" style="font-family:var(--wp--preset--font-family--montserrat);font-weight:700;font-size:1.625rem;margin-bottom:1.25rem">How the VA Loan Process Works</h2>
+			<!-- /wp:heading -->
+
+			<!-- wp:html -->
+			<ol style="list-style:none;padding:0;margin:0 0 2rem 0;display:flex;flex-direction:column;gap:1rem">
+				<li style="display:flex;gap:1rem;align-items:flex-start">
+					<span style="flex-shrink:0;width:2rem;height:2rem;border-radius:50%;background:#0B1F3A;color:#C8A96B;font-family:var(--wp--preset--font-family--montserrat,sans-serif);font-weight:700;font-size:0.875rem;display:flex;align-items:center;justify-content:center">1</span>
+					<div>
+						<strong style="display:block;color:#0B1F3A;margin-bottom:0.25rem">Get Your Certificate of Eligibility (COE)</strong>
+						<span style="color:#374151;font-size:0.9375rem">I'll help you obtain this directly from the VA — it proves your entitlement to lenders.</span>
+					</div>
+				</li>
+				<li style="display:flex;gap:1rem;align-items:flex-start">
+					<span style="flex-shrink:0;width:2rem;height:2rem;border-radius:50%;background:#0B1F3A;color:#C8A96B;font-family:var(--wp--preset--font-family--montserrat,sans-serif);font-weight:700;font-size:0.875rem;display:flex;align-items:center;justify-content:center">2</span>
+					<div>
+						<strong style="display:block;color:#0B1F3A;margin-bottom:0.25rem">Get Pre-Approved with a VA-Approved Lender</strong>
+						<span style="color:#374151;font-size:0.9375rem">I'll connect you with trusted local lenders who specialize in VA loans and understand West Michigan's market.</span>
+					</div>
+				</li>
+				<li style="display:flex;gap:1rem;align-items:flex-start">
+					<span style="flex-shrink:0;width:2rem;height:2rem;border-radius:50%;background:#0B1F3A;color:#C8A96B;font-family:var(--wp--preset--font-family--montserrat,sans-serif);font-weight:700;font-size:0.875rem;display:flex;align-items:center;justify-content:center">3</span>
+					<div>
+						<strong style="display:block;color:#0B1F3A;margin-bottom:0.25rem">Find Your Home</strong>
+						<span style="color:#374151;font-size:0.9375rem">We search together with your VA benefits in mind — I know which properties meet VA appraisal requirements before we tour.</span>
+					</div>
+				</li>
+				<li style="display:flex;gap:1rem;align-items:flex-start">
+					<span style="flex-shrink:0;width:2rem;height:2rem;border-radius:50%;background:#0B1F3A;color:#C8A96B;font-family:var(--wp--preset--font-family--montserrat,sans-serif);font-weight:700;font-size:0.875rem;display:flex;align-items:center;justify-content:center">4</span>
+					<div>
+						<strong style="display:block;color:#0B1F3A;margin-bottom:0.25rem">VA Appraisal &amp; Underwriting</strong>
+						<span style="color:#374151;font-size:0.9375rem">The VA requires its own appraisal. I'll guide you through any MPR (minimum property requirements) that come up.</span>
+					</div>
+				</li>
+				<li style="display:flex;gap:1rem;align-items:flex-start">
+					<span style="flex-shrink:0;width:2rem;height:2rem;border-radius:50%;background:#0B1F3A;color:#C8A96B;font-family:var(--wp--preset--font-family--montserrat,sans-serif);font-weight:700;font-size:0.875rem;display:flex;align-items:center;justify-content:center">5</span>
+					<div>
+						<strong style="display:block;color:#0B1F3A;margin-bottom:0.25rem">Close &amp; Move In</strong>
+						<span style="color:#374151;font-size:0.9375rem">Often with $0 down and limited closing costs. I'll be at the table with you through to the very end.</span>
+					</div>
+				</li>
+			</ol>
+			<!-- /wp:html -->
+
+			<!-- wp:separator {"style":{"spacing":{"margin":{"top":"0","bottom":"2rem"}},"color":{"background":"rgba(200,169,107,0.3)"}}} -->
+			<hr class="wp-block-separator has-background" style="margin-top:0;margin-bottom:2rem;background-color:rgba(200,169,107,0.3);border-color:rgba(200,169,107,0.3)"/>
+			<!-- /wp:separator -->
+
+			<!-- Why Nathan -->
+			<!-- wp:heading {"level":2,"textColor":"navy","style":{"typography":{"fontFamily":"var:preset|font-family|montserrat","fontWeight":"700","fontSize":"1.625rem"},"spacing":{"margin":{"bottom":"1.25rem"}}}} -->
+			<h2 class="wp-block-heading has-navy-color has-text-color" style="font-family:var(--wp--preset--font-family--montserrat);font-weight:700;font-size:1.625rem;margin-bottom:1.25rem">Why Work With Me on Your VA Loan?</h2>
+			<!-- /wp:heading -->
+
+			<!-- wp:html -->
+			<div style="display:flex;flex-direction:column;gap:1.25rem;margin-bottom:2rem">
+				<div style="display:flex;gap:1rem;align-items:flex-start">
+					<span style="font-size:1.375rem;flex-shrink:0">🏠</span>
+					<div>
+						<strong style="display:block;color:#0B1F3A;margin-bottom:0.2rem">VA-Experienced Agent</strong>
+						<span style="color:#374151;font-size:0.9375rem">I've guided veterans through the VA loan process from COE to closing. I know what to expect at every stage so there are no surprises.</span>
+					</div>
+				</div>
+				<div style="display:flex;gap:1rem;align-items:flex-start">
+					<span style="font-size:1.375rem;flex-shrink:0">🤝</span>
+					<div>
+						<strong style="display:block;color:#0B1F3A;margin-bottom:0.2rem">Veteran-Friendly Lender Network</strong>
+						<span style="color:#374151;font-size:0.9375rem">I'll connect you with lenders who offer competitive VA rates, waive origination fees for veterans, and move fast to close.</span>
+					</div>
+				</div>
+				<div style="display:flex;gap:1rem;align-items:flex-start">
+					<span style="font-size:1.375rem;flex-shrink:0">📍</span>
+					<div>
+						<strong style="display:block;color:#0B1F3A;margin-bottom:0.2rem">Deep West Michigan Knowledge</strong>
+						<span style="color:#374151;font-size:0.9375rem">Grand Rapids, Grand Haven, Lowell, Rockford — I know which neighborhoods work for veterans and which homes will sail through VA appraisal.</span>
+					</div>
+				</div>
+			</div>
+			<!-- /wp:html -->
+
+			<!-- wp:separator {"style":{"spacing":{"margin":{"top":"0","bottom":"2rem"}},"color":{"background":"rgba(200,169,107,0.3)"}}} -->
+			<hr class="wp-block-separator has-background" style="margin-top:0;margin-bottom:2rem;background-color:rgba(200,169,107,0.3);border-color:rgba(200,169,107,0.3)"/>
+			<!-- /wp:separator -->
+
+			<!-- FAQ -->
+			<!-- wp:heading {"level":2,"textColor":"navy","style":{"typography":{"fontFamily":"var:preset|font-family|montserrat","fontWeight":"700","fontSize":"1.625rem"},"spacing":{"margin":{"bottom":"1.25rem"}}}} -->
+			<h2 class="wp-block-heading has-navy-color has-text-color" style="font-family:var(--wp--preset--font-family--montserrat);font-weight:700;font-size:1.625rem;margin-bottom:1.25rem">Common VA Loan Questions</h2>
+			<!-- /wp:heading -->
+
+			<!-- wp:html -->
+			<div style="display:flex;flex-direction:column;gap:0" class="nwmr-faq">
+				<details style="border-bottom:1px solid #E5E7EB;padding:1rem 0">
+					<summary style="cursor:pointer;font-weight:600;color:#0B1F3A;font-size:0.9375rem;list-style:none;display:flex;justify-content:space-between;align-items:center">Can I use my VA loan benefit more than once? <span style="color:#C8A96B;font-size:1.125rem">+</span></summary>
+					<p style="color:#374151;font-size:0.9375rem;margin:0.75rem 0 0">Yes. Your VA loan benefit is reusable. As long as you've paid off a previous VA loan (or still have remaining entitlement), you can use it again — even to buy a second home after moving.</p>
+				</details>
+				<details style="border-bottom:1px solid #E5E7EB;padding:1rem 0">
+					<summary style="cursor:pointer;font-weight:600;color:#0B1F3A;font-size:0.9375rem;list-style:none;display:flex;justify-content:space-between;align-items:center">Is there a loan limit on VA loans? <span style="color:#C8A96B;font-size:1.125rem">+</span></summary>
+					<p style="color:#374151;font-size:0.9375rem;margin:0.75rem 0 0">Since 2020, there are no VA loan limits for borrowers with full entitlement. You can borrow as much as a lender is willing to lend — with $0 down — as long as you qualify on income and credit.</p>
+				</details>
+				<details style="border-bottom:1px solid #E5E7EB;padding:1rem 0">
+					<summary style="cursor:pointer;font-weight:600;color:#0B1F3A;font-size:0.9375rem;list-style:none;display:flex;justify-content:space-between;align-items:center">What is the VA funding fee? <span style="color:#C8A96B;font-size:1.125rem">+</span></summary>
+					<p style="color:#374151;font-size:0.9375rem;margin:0.75rem 0 0">The VA funding fee is a one-time cost (typically 1.25%–3.3% of the loan) that helps fund the VA program. It can be rolled into your loan. Veterans with a service-connected disability rating of 10% or more are exempt from this fee entirely.</p>
+				</details>
+				<details style="border-bottom:1px solid #E5E7EB;padding:1rem 0">
+					<summary style="cursor:pointer;font-weight:600;color:#0B1F3A;font-size:0.9375rem;list-style:none;display:flex;justify-content:space-between;align-items:center">What credit score do I need? <span style="color:#C8A96B;font-size:1.125rem">+</span></summary>
+					<p style="color:#374151;font-size:0.9375rem;margin:0.75rem 0 0">The VA itself sets no minimum credit score, but most lenders require a 580–620. I can connect you with lenders who work with lower scores and help you understand your options honestly.</p>
+				</details>
+				<details style="padding:1rem 0">
+					<summary style="cursor:pointer;font-weight:600;color:#0B1F3A;font-size:0.9375rem;list-style:none;display:flex;justify-content:space-between;align-items:center">Can I use a VA loan for a condo or townhome? <span style="color:#C8A96B;font-size:1.125rem">+</span></summary>
+					<p style="color:#374151;font-size:0.9375rem;margin:0.75rem 0 0">Yes, but the development must be on the VA's approved condo list. I'll verify this before you fall in love with a property — it's a step many agents overlook.</p>
+				</details>
+			</div>
+			<!-- /wp:html -->
+
 		</div>
 		<!-- /wp:column -->
 
-		<!-- Sidebar: VA Loan benefits quick facts -->
-		<!-- wp:column {"width":"35%"} -->
-		<div class="wp-block-column" style="flex-basis:35%">
+		<!-- ── Right: sidebar ─────────────────────────────── -->
+		<!-- wp:column {"width":"38%"} -->
+		<div class="wp-block-column" style="flex-basis:38%">
 
 			<!-- wp:group {"style":{"border":{"radius":"12px","color":"rgba(200,169,107,0.25)","width":"1px","style":"solid"},"spacing":{"padding":{"top":"2rem","bottom":"2rem","left":"1.75rem","right":"1.75rem"}},"color":{"background":"#F5F7FA"}},"layout":{"type":"constrained"}} -->
 			<div class="wp-block-group" style="border-radius:12px;border:1px solid rgba(200,169,107,0.25);padding:2rem 1.75rem;background:#F5F7FA">
@@ -98,6 +238,33 @@
 	<!-- /wp:columns -->
 
 </main>
+<!-- /wp:group -->
+
+<!-- ── BAH Calculator section ─────────────────────────────── -->
+<!-- wp:group {"tagName":"section","style":{"spacing":{"padding":{"top":"clamp(3.5rem,7vw,5.5rem)","bottom":"clamp(3.5rem,7vw,5.5rem)"}},"color":{"background":"#F5F7FA"}},"layout":{"type":"constrained"}} -->
+<section class="wp-block-group" style="padding-top:clamp(3.5rem,7vw,5.5rem);padding-bottom:clamp(3.5rem,7vw,5.5rem);background:#F5F7FA">
+
+	<!-- wp:group {"layout":{"type":"constrained","contentSize":"860px"}} -->
+	<div class="wp-block-group">
+
+		<!-- wp:html --><hr class="nwmr-gold-rule nwmr-gold-rule--center" aria-hidden="true"><!-- /wp:html -->
+
+		<!-- wp:heading {"textAlign":"center","level":2,"textColor":"navy","style":{"typography":{"fontFamily":"var:preset|font-family|montserrat","fontWeight":"700","fontSize":"clamp(1.5rem,3vw,2rem)"},"spacing":{"margin":{"bottom":"0.625rem"}}}} -->
+		<h2 class="wp-block-heading has-text-align-center has-navy-color has-text-color" style="font-family:var(--wp--preset--font-family--montserrat);font-weight:700;font-size:clamp(1.5rem,3vw,2rem);margin-bottom:0.625rem">What Can You Afford With Your BAH?</h2>
+		<!-- /wp:heading -->
+
+		<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#374151"},"typography":{"fontSize":"1rem"},"spacing":{"margin":{"bottom":"2rem"}}}} -->
+		<p class="has-text-align-center" style="color:#374151;font-size:1rem;margin-bottom:2rem">Enter your pay grade and zip code to see your estimated monthly BAH and which West Michigan neighborhoods fall within your budget — no email required.</p>
+		<!-- /wp:paragraph -->
+
+		<!-- wp:shortcode -->
+		[nwmr_bah_calculator]
+		<!-- /wp:shortcode -->
+
+	</div>
+	<!-- /wp:group -->
+
+</section>
 <!-- /wp:group -->
 
 <!-- wp:pattern {"slug":"nathan-west-michigan-realty/testimonials"} /-->

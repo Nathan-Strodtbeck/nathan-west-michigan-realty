@@ -55,6 +55,30 @@ function nwmr_editor_assets(): void {
 }
 
 /**
+ * Follow Up Boss Pixel — loads on all front-end pages.
+ * Tracker ID: WT-GCCSSPEN
+ */
+add_action( 'wp_head', 'nwmr_followupboss_pixel' );
+function nwmr_followupboss_pixel(): void {
+	if ( is_admin() ) {
+		return;
+	}
+	?>
+	<!-- begin Follow Up Boss Pixel -->
+	<script>
+	(function(w,i,d,g,e,t){w["WidgetTrackerObject"]=g;(w[g]=w[g]||function()
+	{(w[g].q=w[g].q||[]).push(arguments);}),(w[g].ds=1*new Date());(e="script"),
+	(t=d.createElement(e)),(e=d.getElementsByTagName(e)[0]);t.async=1;t.src=i;
+	e.parentNode.insertBefore(t,e);})
+	(window,"https://widgetbe.com/agent",document,"widgetTracker");
+	window.widgetTracker("create", "WT-GCCSSPEN");
+	window.widgetTracker("send", "pageview");
+	</script>
+	<!-- end Follow Up Boss Pixel -->
+	<?php
+}
+
+/**
  * Preconnect to Google Fonts for performance.
  */
 add_filter( 'wp_resource_hints', 'nwmr_resource_hints', 10, 2 );

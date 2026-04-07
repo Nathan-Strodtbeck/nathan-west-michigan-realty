@@ -177,6 +177,101 @@ function nwmr_register_meta(): void {
 }
 
 /**
+ * Area Quick Facts meta box.
+ */
+add_action( 'add_meta_boxes', 'nwmr_area_quick_facts_metabox' );
+function nwmr_area_quick_facts_metabox(): void {
+	add_meta_box(
+		'nwmr_area_quick_facts',
+		esc_html__( 'Area Quick Facts', 'nathan-west-michigan-realty' ),
+		'nwmr_render_area_quick_facts_metabox',
+		'area_guide',
+		'side',
+		'high'
+	);
+}
+
+function nwmr_render_area_quick_facts_metabox( WP_Post $post ): void {
+	wp_nonce_field( 'nwmr_save_area_quick_facts', 'nwmr_area_quick_facts_nonce' );
+
+	$fields = [
+		'_nwmr_area_tagline'      => [
+			'label'       => __( 'Tagline', 'nathan-west-michigan-realty' ),
+			'type'        => 'text',
+			'placeholder' => 'e.g. Where small-town charm meets easy city access',
+		],
+		'_nwmr_area_median_price' => [
+			'label'       => __( 'Median Home Price', 'nathan-west-michigan-realty' ),
+			'type'        => 'text',
+			'placeholder' => 'e.g. $385,000',
+		],
+		'_nwmr_area_schools'      => [
+			'label'       => __( 'Top Schools', 'nathan-west-michigan-realty' ),
+			'type'        => 'text',
+			'placeholder' => 'e.g. Lowell Area Schools (9/10)',
+		],
+		'_nwmr_area_commute'      => [
+			'label'       => __( 'Commute to Grand Rapids', 'nathan-west-michigan-realty' ),
+			'type'        => 'text',
+			'placeholder' => 'e.g. ~25 min via I-96',
+		],
+		'_nwmr_area_highlights'   => [
+			'label'       => __( 'Area Highlights', 'nathan-west-michigan-realty' ),
+			'type'        => 'textarea',
+			'placeholder' => 'One highlight per line, e.g.' . "\n" . 'Riverfront parks & trails' . "\n" . 'Award-winning farmers market',
+		],
+	];
+
+	echo '<style>
+		.nwmr-meta-field { margin-bottom: 12px; }
+		.nwmr-meta-field label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; color: #50575e; letter-spacing: .04em; }
+		.nwmr-meta-field input[type="text"],
+		.nwmr-meta-field textarea { width: 100%; box-sizing: border-box; }
+		.nwmr-meta-field textarea { height: 80px; resize: vertical; }
+	</style>';
+
+	foreach ( $fields as $key => $cfg ) {
+		$value = get_post_meta( $post->ID, $key, true );
+		$id    = esc_attr( sanitize_key( $key ) );
+		echo '<div class="nwmr-meta-field">';
+		echo '<label for="' . $id . '">' . esc_html( $cfg['label'] ) . '</label>';
+		if ( 'textarea' === $cfg['type'] ) {
+			echo '<textarea id="' . $id . '" name="' . $id . '" placeholder="' . esc_attr( $cfg['placeholder'] ) . '">' . esc_textarea( $value ) . '</textarea>';
+		} else {
+			echo '<input type="text" id="' . $id . '" name="' . $id . '" value="' . esc_attr( $value ) . '" placeholder="' . esc_attr( $cfg['placeholder'] ) . '">';
+		}
+		echo '</div>';
+	}
+}
+
+add_action( 'save_post_area_guide', 'nwmr_save_area_quick_facts' );
+function nwmr_save_area_quick_facts( int $post_id ): void {
+	if (
+		! isset( $_POST['nwmr_area_quick_facts_nonce'] ) ||
+		! wp_verify_nonce( sanitize_key( $_POST['nwmr_area_quick_facts_nonce'] ), 'nwmr_save_area_quick_facts' ) ||
+		( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ||
+		! current_user_can( 'edit_post', $post_id )
+	) {
+		return;
+	}
+
+	$string_fields = [
+		'_nwmr_area_tagline',
+		'_nwmr_area_median_price',
+		'_nwmr_area_schools',
+		'_nwmr_area_commute',
+		'_nwmr_area_highlights',
+	];
+
+	foreach ( $string_fields as $key ) {
+		$input_name = sanitize_key( $key );
+		if ( isset( $_POST[ $input_name ] ) ) {
+			update_post_meta( $post_id, $key, sanitize_textarea_field( wp_unslash( $_POST[ $input_name ] ) ) );
+		}
+	}
+}
+
+/**
  * Flush rewrite rules on activation only.
  */
 add_action( 'after_switch_theme', 'nwmr_flush_rewrites' );

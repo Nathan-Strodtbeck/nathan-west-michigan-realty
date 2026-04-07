@@ -19,3 +19,4 @@ require_once NWMR_DIR . '/inc/theme-setup.php';
 require_once NWMR_DIR . '/inc/enqueue.php';
 require_once NWMR_DIR . '/inc/custom-post-types.php';
 require_once NWMR_DIR . '/inc/block-patterns.php';
+require_once NWMR_DIR . '/inc/bah-calculator.php';
