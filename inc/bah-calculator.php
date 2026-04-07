@@ -215,7 +215,7 @@ function nwmr_bah_calculator_shortcode(): string {
 		gap: 1.25rem 1.5rem;
 		margin-bottom: 1.75rem;
 	}
-	@media (max-width: 600px) { .nwmr-bah-card__fields { grid-template-columns: 1fr; } }
+	@media (max-width: 480px) { .nwmr-bah-card__fields { grid-template-columns: 1fr; } }
 
 	.nwmr-bah-field--full { grid-column: 1 / -1; }
 
@@ -295,10 +295,12 @@ function nwmr_bah_calculator_shortcode(): string {
 	input[type="range"]#nwmr-bah-rate:focus { outline: none; }
 
 	.nwmr-bah-slider-ticks {
-		display: flex; justify-content: space-between;
+		display: flex !important; justify-content: space-between;
 		margin-top: 0.375rem; padding: 0 2px;
 	}
-	.nwmr-bah-slider-ticks span { font-size: 0.75rem; color: #9CA3AF; }
+	.nwmr-bah-slider-ticks span {
+		display: inline !important; font-size: 0.75rem; color: #9CA3AF;
+	}
 
 	/* Calculate button */
 	.nwmr-bah-btn {
