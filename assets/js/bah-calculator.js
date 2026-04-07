@@ -1,9 +1,8 @@
 /**
  * BAH Calculator
  *
- * Rates: CY2026, Grand Rapids MI MHA (Military Housing Area).
- * E-5 without dependents = $1,635 (user-verified).
- * All other grades scaled from confirmed DoD CY2026 structure.
+ * Rates: CY2026, Grand Rapids MI MHA (MI154).
+ * E-5 without dependents = $1,635 (user-verified against DoD official table).
  * Verify the full table annually at: defensetravel.dod.mil/site/bahCalc.cfm
  */
 ( function () {
@@ -44,13 +43,7 @@
 		O10: { no: 2511, dep: 3033 }, // estimated — not in published table
 	};
 
-	/* ── West Michigan zip prefixes → Grand Rapids MHA ───────*/
-	var WM_PREFIXES = [ '494', '495', '496' ];
-
-	/* ── Affordability constants ──────────────────────────────
-	 * Michigan avg property tax ~1.5%/yr + insurance ~0.6%/yr
-	 * VA loan: 0% down, no PMI
-	 * ─────────────────────────────────────────────────────────*/
+	var WM_PREFIXES    = [ '494', '495', '496' ];
 	var TAX_INS_FACTOR = ( 0.015 + 0.006 ) / 12; // per $1 of home value/month
 
 	/* ── Helpers ─────────────────────────────────────────────*/
@@ -68,7 +61,6 @@
 		return totalBudget / ( piMonthlyFactor( annualRatePct ) + TAX_INS_FACTOR );
 	}
 
-	/* ── Slider fill helper ───────────────────────────────────*/
 	function updateSliderFill( slider ) {
 		var min = parseFloat( slider.min );
 		var max = parseFloat( slider.max );
@@ -77,28 +69,50 @@
 		slider.style.setProperty( '--pct', pct.toFixed( 1 ) + '%' );
 	}
 
+	function getAffordabilityMessage( maxPrice ) {
+		if ( maxPrice < 150000 ) {
+			return '💡 Your BAH alone is tight for West Michigan — opening "Add income sources" above and including VA disability or other income will expand your options significantly.';
+		}
+		if ( maxPrice < 250000 ) {
+			return '📍 Starter home options exist in this range. There are neighborhoods worth exploring — let\'s find the right fit for your situation.';
+		}
+		if ( maxPrice < 400000 ) {
+			return '✅ Solid buying power. Several West Michigan neighborhoods are comfortably within reach with a VA loan.';
+		}
+		if ( maxPrice < 600000 ) {
+			return '💪 Strong position — most West Michigan areas are within your budget. You have real options here.';
+		}
+		return '⭐ Excellent buying power. You have outstanding options throughout the West Michigan region.';
+	}
+
 	/* ── DOM refs ────────────────────────────────────────────*/
 	var wrap = document.getElementById( 'nwmr-bah-calculator' );
 	if ( ! wrap ) return;
 
-	var gradeEl      = document.getElementById( 'nwmr-bah-grade' );
-	var zipEl        = document.getElementById( 'nwmr-bah-zip' );
-	var zipHint      = document.getElementById( 'nwmr-bah-zip-hint' );
-	var rateSlider   = document.getElementById( 'nwmr-bah-rate' );
-	var rateDisplay  = document.getElementById( 'nwmr-bah-rate-display' );
-	var disabilityEl = document.getElementById( 'nwmr-bah-disability' );
-	var incomeEl     = document.getElementById( 'nwmr-bah-income' );
-	var calcBtn      = document.getElementById( 'nwmr-bah-calc-btn' );
+	var gradeEl          = document.getElementById( 'nwmr-bah-grade' );
+	var zipEl            = document.getElementById( 'nwmr-bah-zip' );
+	var zipHint          = document.getElementById( 'nwmr-bah-zip-hint' );
+	var rateSlider       = document.getElementById( 'nwmr-bah-rate' );
+	var rateDisplay      = document.getElementById( 'nwmr-bah-rate-display' );
+	var rateSummNote     = document.getElementById( 'nwmr-bah-rate-summary-note' );
+	var disabilityEl     = document.getElementById( 'nwmr-bah-disability' );
+	var incomeEl         = document.getElementById( 'nwmr-bah-income' );
 
-	var resultsEl    = document.getElementById( 'nwmr-bah-results' );
-	var monthlyEl    = document.getElementById( 'nwmr-bah-monthly' );
-	var extraStatEl  = document.getElementById( 'nwmr-bah-extra-stat' );
-	var extraDivEl   = document.getElementById( 'nwmr-bah-extra-div' );
-	var extraEl      = document.getElementById( 'nwmr-bah-extra' );
-	var budgetEl     = document.getElementById( 'nwmr-bah-budget' );
-	var maxPriceEl   = document.getElementById( 'nwmr-bah-maxprice' );
-	var areaGrid     = document.getElementById( 'nwmr-bah-areas-grid' );
-	var areaNone     = document.getElementById( 'nwmr-bah-areas-none' );
+	var resultsEl        = document.getElementById( 'nwmr-bah-results' );
+	var monthlyEl        = document.getElementById( 'nwmr-bah-monthly' );
+	var extraStatEl      = document.getElementById( 'nwmr-bah-extra-stat' );
+	var extraDivEl       = document.getElementById( 'nwmr-bah-extra-div' );
+	var extraEl          = document.getElementById( 'nwmr-bah-extra' );
+	var budgetEl         = document.getElementById( 'nwmr-bah-budget' );
+	var maxPriceEl       = document.getElementById( 'nwmr-bah-maxprice' );
+	var rangeEl          = document.getElementById( 'nwmr-bah-range' );
+	var piEl             = document.getElementById( 'nwmr-bah-pi' );
+	var taxEl            = document.getElementById( 'nwmr-bah-tax' );
+	var insEl            = document.getElementById( 'nwmr-bah-ins' );
+	var totalMoEl        = document.getElementById( 'nwmr-bah-total-mo' );
+	var messageEl        = document.getElementById( 'nwmr-bah-message' );
+	var areaGrid         = document.getElementById( 'nwmr-bah-areas-grid' );
+	var areaNone         = document.getElementById( 'nwmr-bah-areas-none' );
 
 	var depStatus = 'nodep';
 
@@ -107,11 +121,12 @@
 		btn.addEventListener( 'click', function () {
 			wrap.querySelectorAll( '.nwmr-bah-toggle__btn' ).forEach( function ( b ) {
 				b.classList.remove( 'nwmr-bah-toggle__btn--active' );
-				b.removeAttribute( 'aria-pressed' );
+				b.setAttribute( 'aria-pressed', 'false' );
 			} );
 			btn.classList.add( 'nwmr-bah-toggle__btn--active' );
 			btn.setAttribute( 'aria-pressed', 'true' );
 			depStatus = btn.dataset.dep;
+			autoCalc();
 		} );
 	} );
 
@@ -127,7 +142,7 @@
 			zipHint.textContent = '✓ West Michigan — Grand Rapids MHA rates applied';
 			zipHint.className = 'nwmr-bah-field__hint nwmr-bah-field__hint--ok';
 		} else {
-			zipHint.textContent = '⚠ Outside West Michigan. Grand Rapids MHA rates shown — verify yours at the official DoD calculator.';
+			zipHint.textContent = '⚠ Outside West Michigan — verify your rates at the official DoD calculator.';
 			zipHint.className = 'nwmr-bah-field__hint nwmr-bah-field__hint--warn';
 		}
 	} );
@@ -135,15 +150,24 @@
 	/* ── Rate slider ─────────────────────────────────────────*/
 	updateSliderFill( rateSlider );
 	rateSlider.addEventListener( 'input', function () {
-		var v = parseFloat( rateSlider.value );
-		rateDisplay.textContent = v.toFixed( 3 ).replace( /\.?0+$/, '' ) + '%';
-		rateDisplay.textContent = v % 1 === 0 ? v + '.0%' : v + '%';
+		var v       = parseFloat( rateSlider.value );
+		var display = v % 1 === 0 ? v + '.0%' : v + '%';
+		rateDisplay.textContent = display;
+		if ( rateSummNote ) {
+			rateSummNote.textContent = 'VA 30-yr at ' + display;
+		}
 		rateSlider.setAttribute( 'aria-valuenow', v );
 		updateSliderFill( rateSlider );
+		autoCalc();
 	} );
 
-	/* ── Calculate ───────────────────────────────────────────*/
-	calcBtn.addEventListener( 'click', function () {
+	/* ── Live update on grade / income changes ───────────────*/
+	gradeEl.addEventListener( 'change', autoCalc );
+	disabilityEl.addEventListener( 'input', autoCalc );
+	incomeEl.addEventListener( 'input', autoCalc );
+
+	/* ── Core calculation ────────────────────────────────────*/
+	function autoCalc() {
 		var grade    = gradeEl.value;
 		var rateData = RATES[ grade ];
 		if ( ! rateData ) return;
@@ -156,31 +180,52 @@
 		var rate       = parseFloat( rateSlider.value ) || 6.75;
 		var maxPrice   = calcMaxPrice( budget, rate );
 
-		// Populate summary
-		monthlyEl.textContent  = fmt( bah ) + '/mo';
-		budgetEl.textContent   = fmt( budget ) + '/mo';
-		maxPriceEl.textContent = fmt( maxPrice );
+		/* Recommended range: 75% – 90% of max price */
+		var rangeLow  = maxPrice * 0.75;
+		var rangeHigh = maxPrice * 0.90;
 
-		// Show/hide the extra income row
+		/* Monthly breakdown at max price */
+		var piF      = piMonthlyFactor( rate );
+		var piAmt    = piF * maxPrice;
+		var taxAmt   = ( 0.015 / 12 ) * maxPrice;
+		var insAmt   = ( 0.006 / 12 ) * maxPrice;
+		var totalAmt = piAmt + taxAmt + insAmt;
+
+		/* Stat bar */
+		monthlyEl.textContent = fmt( bah ) + '/mo';
+		budgetEl.textContent  = fmt( budget ) + '/mo';
+
 		if ( extra > 0 ) {
-			extraEl.textContent    = '+' + fmt( extra ) + '/mo';
-			extraStatEl.hidden     = false;
-			extraDivEl.hidden      = false;
+			extraEl.textContent  = '+' + fmt( extra ) + '/mo';
+			extraStatEl.hidden   = false;
+			extraDivEl.hidden    = false;
 		} else {
 			extraStatEl.hidden = true;
 			extraDivEl.hidden  = true;
 		}
 
+		/* Main panel */
+		maxPriceEl.textContent = fmt( maxPrice );
+		rangeEl.textContent    = fmt( rangeLow ) + ' \u2013 ' + fmt( rangeHigh );
+		piEl.textContent       = fmt( piAmt ) + '/mo';
+		taxEl.textContent      = fmt( taxAmt ) + '/mo';
+		insEl.textContent      = fmt( insAmt ) + '/mo';
+		totalMoEl.textContent  = fmt( totalAmt ) + '/mo';
+
+		/* Affordability message */
+		messageEl.textContent = getAffordabilityMessage( maxPrice );
+
+		/* Neighborhood grid */
 		renderAreas( maxPrice );
 
+		/* Show results section */
 		resultsEl.hidden = false;
-		resultsEl.scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
-	} );
+	}
 
 	/* ── Render area cards ───────────────────────────────────*/
 	function renderAreas( maxPrice ) {
-		var areas      = ( window.nwmrBah && window.nwmrBah.areas ) ? window.nwmrBah.areas : [];
-		var STRETCH    = 1.20; // within 20% above budget = "slight stretch"
+		var areas   = ( window.nwmrBah && window.nwmrBah.areas ) ? window.nwmrBah.areas : [];
+		var STRETCH = 1.20;
 
 		var affordable = [];
 		var stretch    = [];
@@ -201,23 +246,22 @@
 			return;
 		}
 
-		areaNone.hidden = false; // reset
 		areaNone.hidden = true;
 		areaGrid.hidden = false;
 
-		affordable.forEach( function ( a ) { areaGrid.appendChild( makeCard( a, 'fit', '✅ Within Budget' ) ); } );
-		stretch.forEach( function ( a )    { areaGrid.appendChild( makeCard( a, 'stretch', '⚠️ Slight Stretch' ) ); } );
+		affordable.forEach( function ( a ) { areaGrid.appendChild( makeCard( a, 'fit',     '\u2705 Within Budget' ) ); } );
+		stretch.forEach(    function ( a ) { areaGrid.appendChild( makeCard( a, 'stretch', '\u26a0\ufe0f Slight Stretch' ) ); } );
 	}
 
 	function makeCard( area, type, badge ) {
-		var a = document.createElement( 'a' );
+		var a       = document.createElement( 'a' );
 		a.href      = area.url;
 		a.className = 'nwmr-bah-area-card nwmr-bah-area-card--' + type;
 		a.innerHTML =
-			'<span class="nwmr-bah-area-card__badge">' + badge + '</span>' +
-			'<span class="nwmr-bah-area-card__name">'  + esc( area.name ) + '</span>' +
+			'<span class="nwmr-bah-area-card__badge">'  + badge + '</span>' +
+			'<span class="nwmr-bah-area-card__name">'   + esc( area.name ) + '</span>' +
 			'<span class="nwmr-bah-area-card__price">Median: ' + fmt( area.price ) + '</span>' +
-			'<span class="nwmr-bah-area-card__link">View Neighborhood Guide →</span>';
+			'<span class="nwmr-bah-area-card__link">View Neighborhood Guide \u2192</span>';
 		return a;
 	}
 
@@ -226,5 +270,8 @@
 		d.appendChild( document.createTextNode( str ) );
 		return d.innerHTML;
 	}
+
+	/* ── Auto-calculate on load with defaults ────────────────*/
+	autoCalc();
 
 } )();
